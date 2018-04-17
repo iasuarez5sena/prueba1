@@ -1,0 +1,36 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 2/04/2018, 06:23:05 AM
+    Author     : Ismael
+*/
+
+.loading.hide{
+    display: none;
+}
+.loading.show{
+    display: block;
+}
+.data-table-lazy{
+
+}
+.data-table-lazy .header,
+.data-table-lazy .footer{
+    margin-bottom: 10px;
+    padding: 0px;
+}
+.data-table-lazy .header>div>*{
+    margin-left: 10px;
+}
+.data-table-lazy .header .page-size{
+    max-width: 70px;
+}
+.data-table-lazy .header .search{
+    max-width: 250px;
+}
+.data-table-lazy .footer .pagination{
+    margin-top: 0px;
+}

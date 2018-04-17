@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+              xmlns:jsf="http://xmlns.jcp.org/jsf"
+              xmlns:h="http://xmlns.jcp.org/jsf/html"
+              xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+              xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+              xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+              xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <cc:interface>
+        <cc:attribute name="showMessageTable" default="true" type="java.lang.Boolean"/>
+        <cc:attribute name="dataTableLazy" type="edu.pruebas.datamodel.DataTableLazy" required="true"/>
+        <cc:attribute name="options" default="false" type="java.lang.Boolean"/>
+        <cc:attribute name="exporterPDF" default="false" type="java.lang.Boolean"/>
+        <cc:attribute name="actionDelete" method-signature="java.lang.Object action()"/>
+        <cc:attribute name="renderedIconDelete" default="true" type="java.lang.Boolean"/>
+        <cc:attribute name="iconDelete" default="glyphicon glyphicon-trash" type="java.lang.String"/>
+        <cc:attribute name="textDelete" type="java.lang.String"/>
+        <cc:attribute name="onclickDelete" type="java.lang.String"/>
+        <cc:attribute name="actionEdit" method-signature="java.lang.Object action()"/>
+        <cc:attribute name="renderedIconEdit" default="true" type="java.lang.Boolean"/>
+        <cc:attribute name="iconEdit" default="glyphicon glyphicon-pencil" type="java.lang.String"/>
+        <cc:attribute name="textEdit" type="java.lang.String"/>
+        <cc:attribute name="onclickEdit" default="null" type="java.lang.String"/>
+        <cc:facet name="addOptions" />
+    </cc:interface>
+    <cc:implementation>
+        <h:outputStylesheet library="components" name="sdp/tables/css/dataTable.css"/>
+        <h:outputScript library="components" name="sdp/tables/js/dataTable.js" target="head"/>
+        <h:outputScript library="jquery" name="jquery.js" target="head"/>
+        <div id="#{cc.clientId}" class="data-table-lazy" style="position: relative;">
+
+            <div id="#{cc.clientId}-loading" class="loading hide" style="position: absolute;width: 100%; min-height: 100%; background-color: rgba(100,100,100,0.6)">
+                <img src="#{request.contextPath}/resources/components/sdp/img/loading.gif" width="90px" 
+                     style="position: absolute; top: 50%; margin-top: -45px; left: 50%; margin-left: -45px;"/>
+            </div>
+            <h:panelGroup id="messagePanel" layout="block" rendered="#{cc.attrs.showMessageTable}">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+
+            <h2>Otra forma</h2>
+            <div class="container-fluid header">
+                <form jsf:id="form-header" jsf:prependId="false">
+                    <div class="col-xs-12 col-md-2 pull-left">
+                    </div>
+                    <div class="col-xs-12 col-md-10 pull-right text-right">
+                        <div class="input-group btn-exporer  pull-right">
+                            <button class="btn btn-danger" jsf:rendered="#{cc.attrs.exporterPDF}" 
+                                    jsf:value="PDF" jsf:action="#{cc.attrs.dataTableLazy.exportPDF()}">
+                                PDF
+                            </button>
+                        </div>
+                        <select class="form-control page-size pull-right" jsf:value="#{cc.attrs.dataTableLazy.pageSize}" size="1">
+                            <f:selectItem itemValue="5" itemLabel="5"/>
+                            <f:selectItem itemValue="10" itemLabel="10"/>
+                            <f:selectItem itemValue="15" itemLabel="15"/>
+                            <f:ajax event="change" execute="@this" render="#{cc.clientId}"/>
+                        </select>
+                        <div class="input-group search  pull-right">
+                            <input type="number" class="form-control" placeholder="Search"/>
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </button>
+                            </span>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <h:panelGroup rendered="#{cc.attrs.dataTableLazy.model.rowCount > 0}">
+                <form jsf:id="form-data-table" jsf:prependId="false">
+                    <table class="table table-responsive" rules="all">
+                        <thead>
+                            <tr>
+                                <c:forEach items="#{cc.attrs.dataTableLazy.columns}" var="dmr">
+                                    <th><h:outputText value="#{dmr.label}"/></th>
+                                </c:forEach>
+                                <th jsf:rendered="#{cc.attrs.options}">Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ui:repeat id="prb-rep" value="#{cc.attrs.dataTableLazy.model}" var="item" varStatus="vs">
+                                <tr>
+                                    <ui:repeat value="#{cc.attrs.dataTableLazy.columns}" var="dmr" varStatus="vs">
+                                        <td>
+                                            <a jsf:rendered="#{cc.attrs.options and vs.index eq 0}"
+                                               jsf:actionListener="#{cc.attrs.dataTableLazy.setSelectedIndex(vs.index)}"
+                                               class="hiden" >
+                                                <f:ajax execute="@this" render="@this" />
+                                            </a>
+                                            <h:outputText value="#{dmr.valueField(item)}"/>
+                                        </td>
+                                    </ui:repeat>
+                                    <td jsf:rendered="#{cc.attrs.options}">
+                                        <a jsf:id="btn-delete"
+                                           jsf:rendered="#{not empty cc.attrs.actionDelete}"
+                                           jsf:action="#{cc.attrs.actionDelete}"
+                                           jsf:onclick="com.dataTable.selectItem(this);"
+                                           class="btn btn-danger">
+                                            <i jsf:rendered="#{cc.attrs.renderedIconDelete}" class="#{cc.attrs.iconDelete}"></i>
+                                            #{cc.attrs.textDelete}
+                                        </a> &ensp;
+                                        <a jsf:id="btn-edit"
+                                           jsf:rendered="#{not empty cc.attrs.actionEdit}"
+                                           jsf:action="#{cc.attrs.actionEdit}"
+                                           jsf:onclick="com.dataTable.selectItem(this)"
+                                           class="btn btn-warning">
+                                            <i jsf:rendered="#{cc.attrs.renderedIconEdit}" class="#{cc.attrs.iconEdit}"></i>
+                                            #{cc.attrs.textEdit}
+                                            <f:ajax execute="@this" render="#{cc.clientId}" onevent="com.dataTable.ajaxExecutingEdit"/>
+                                        </a>&ensp;
+                                    </td>
+                                </tr>
+                            </ui:repeat>
+                        </tbody>
+                    </table>
+                </form>
+
+                <ui:include src="paginator.xhtml">
+                    <ui:param name="dataTableLazy" value="#{cc.attrs.dataTableLazy}"/>
+                    <ui:param name="resourceBundleMap" value="#{cc.resourceBundleMap}"/>
+                </ui:include>
+            </h:panelGroup>
+        </div>
+
+        <script defer="true">
+            com.dataTable.init('#{cc.clientId}');
+            com.dataTable.ajaxBeginEdit = #{cc.attrs.onclickEdit};
+        </script>
+    </cc:implementation>
+</ui:component>
+

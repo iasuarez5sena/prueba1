@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:cst="http://xmlns.jcp.org/jsf/composite/components/sdp/tables">
+    <h:head>
+        <title>Facelet Title</title>
+        <style>
+            @import "#{request.contextPath}/resources/bootstrap/css/bootstrap.css";
+        </style>
+        <script src="#{request.contextPath}/resources/jquery/jquery.js" type="text/javascript"></script>
+        <script src="#{request.contextPath}/resources/bootstrap/js/bootstrap.js" type="text/javascript"></script>
+        <style>
+            #btn-0{
+                border-radius: 5px;
+                padding: 5px 10px;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <script>
+            var pruebaFuncion=function(){
+                alert("Upoaaaaaaaaa");
+            };
+        </script>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                        <cst:dataTable id="datos1" dataTableLazy="#{prueba.datos}"
+                                       options="true" actionDelete="#{prueba.pruebaDelete()}"
+                                       actionEdit="#{prueba.pruebaBoton('Hi........... Edit........')}"
+                                       onclickEdit="pruebaFuncion">
+                        </cst:dataTable>
+                    <h:outputText id="prueba" value="#{prueba.datos.selected}"/>
+                </div>
+            </div>
+        </div>
+    </h:body>
+</html>
+

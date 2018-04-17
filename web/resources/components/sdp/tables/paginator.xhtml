@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <form jsf:id="form-paginator" jsf:prependId="false">
+        <div class="container-fluid footer">
+            <div class="col-xs-12 col-md-2 pull-left">
+                <h:outputText value="#{dataTableLazy.paginator.info}"/>&nbsp;
+            </div>
+            <div class="col-xs-12 col-md-10 pull-right text-right">
+                <ul class="pagination">
+                    <ui:repeat value="#{dataTableLazy.paginator.pages}" var="p" varStatus="vs">
+                        <li class="#{p.classes}">
+                            <span jsf:rendered="#{not p.action}"><h:outputText escape="false" value="#{p}"/></span>
+                            <a jsf:actionListener="#{dataTableLazy.setPage(p.page)}" jsf:rendered="#{p.action}" title="#{resourceBundleMap[p.title]} #{p}">
+                                <h:outputText escape="false" value="#{p}"/>
+                                <f:ajax execute="@this" render="#{cc.clientId}" onevent="com.dataTable.paginator.ajaxExecuting"/>
+                            </a>
+                        </li>
+                    </ui:repeat>
+                </ul>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </form>
+    <script defer="true">
+        com.dataTable.paginator.init('#{cc.clientId}');
+    </script>
+</ui:composition>
+
